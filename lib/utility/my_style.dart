@@ -14,17 +14,17 @@ class MyStyle {
   Color primaryColor = Colors.green;
   Color errorColor = Colors.red;
 
-  // Widget iconShowCart(BuildContext context) {
-  //   return IconButton(
-  //     icon: Icon(Icons.add_shopping_cart),
-  //     onPressed: () {
-  //       MaterialPageRoute route = MaterialPageRoute(
-  //         builder: (context) => ShowCart(),
-  //       );
-  //       Navigator.push(context, route);
-  //     },
-  //   );
-  // }
+  Widget iconShowCart(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.add_shopping_cart),
+      onPressed: () {
+        // MaterialPageRoute route = MaterialPageRoute(
+        //   builder: (context) => ShowCart(),
+        // );
+        // Navigator.push(context, route);
+      },
+    );
+  }
 
   Widget showProgress() {
     return Center(

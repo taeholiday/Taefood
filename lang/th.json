@@ -1,3 +1,5 @@
 {
-    "title": "Tae food"
+    "title": "Tae food",
+    "passwordCondition": "รหัสผ่านต้องมีตัวพิมพ์ใหญ่พิมพ์เล็กและตัวเลข",
+    "passwordLengthLabel": "รหัสผ่านต้องมีอักขระต้องไม่ต่ำ 8 ตัว"
 }

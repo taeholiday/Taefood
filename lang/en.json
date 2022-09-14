@@ -1,3 +1,5 @@
 {
-    "title": "Tae food"
+    "title": "Tae food",
+    "passwordCondition": "Password must contain uppercase, lowercase, and number.",
+    "passwordLengthLabel": "Password must be at least 8 characters"
 }

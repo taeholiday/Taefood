@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
@@ -19,11 +21,10 @@ class _ShowListShopAllState extends State<ShowListShopAll> {
   @override
   void initState() {
     super.initState();
-
     readShop();
   }
 
-  Future<Null> readShop() async {
+  Future<void> readShop() async {
     String url =
         '${MyConstant().domain}/TaeFood/getUserWhereChooseType.php?isAdd=true&ChooseType=Shop';
     await Dio().get(url).then((value) {
@@ -34,7 +35,7 @@ class _ShowListShopAllState extends State<ShowListShopAll> {
         UserModel model = UserModel.fromJson(map);
 
         String nameShop = model.nameShop!;
-        if (nameShop.isNotEmpty) {
+        if (nameShop.isNotEmpty && mounted) {
           print('NameShop = ${model.nameShop}');
           setState(() {
             userModels.add(model);
@@ -59,21 +60,15 @@ class _ShowListShopAllState extends State<ShowListShopAll> {
       },
       child: Card(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Container(
-              width: 80.0,
-              height: 80.0,
-              child: CircleAvatar(
-                backgroundImage: NetworkImage(
-                    '${MyConstant().domain}${userModel.urlPicture}'),
-              ),
-            ),
             MyStyle().mySizebox(),
-            Container(
-              width: 120,
-              child: MyStyle().showTitleH3(userModel.nameShop!),
-            ),
+            Expanded(
+                child: Image.network(
+                    '${MyConstant().domain}${userModel.urlPicture}')),
+            MyStyle().mySizebox(),
+            MyStyle().showTitleH3(userModel.nameShop!),
+            MyStyle().mySizebox(),
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taefood/screens/user/show_cart.dart';
 
 class MyStyle {
   MyStyle();
@@ -18,10 +19,10 @@ class MyStyle {
     return IconButton(
       icon: Icon(Icons.add_shopping_cart),
       onPressed: () {
-        // MaterialPageRoute route = MaterialPageRoute(
-        //   builder: (context) => ShowCart(),
-        // );
-        // Navigator.push(context, route);
+        MaterialPageRoute route = MaterialPageRoute(
+          builder: (context) => ShowCart(),
+        );
+        Navigator.push(context, route);
       },
     );
   }

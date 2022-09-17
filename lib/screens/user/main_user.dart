@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taefood/screens/user/show_cart.dart';
 import 'package:taefood/screens/user/show_list_shop_all.dart';
+import 'package:taefood/screens/user/show_status_food_order.dart';
 import 'package:taefood/utility/my_style.dart';
 import 'package:taefood/utility/signout_process.dart';
 
@@ -95,7 +97,7 @@ class _MainUserState extends State<MainUser> {
       onTap: () {
         Navigator.pop(context);
         setState(() {
-          // currentWidget = ShowStatusFoodOrder();
+          currentWidget = ShowStatusFoodOrder();
         });
       },
       leading: Icon(Icons.restaurant_menu),
@@ -110,11 +112,11 @@ class _MainUserState extends State<MainUser> {
       title: Text('ตะกร้า ของฉัน'),
       subtitle: Text('รายการอาหาร ที่อยู่ใน ตะกร้า ยังไม่ได้ Order'),
       onTap: () {
-        // Navigator.pop(context);
-        // MaterialPageRoute route = MaterialPageRoute(
-        //   builder: (context) => ShowCart(),
-        // );
-        // Navigator.push(context, route);
+        Navigator.pop(context);
+        MaterialPageRoute route = MaterialPageRoute(
+          builder: (context) => ShowCart(),
+        );
+        Navigator.push(context, route);
       },
     );
   }

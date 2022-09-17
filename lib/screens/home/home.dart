@@ -5,6 +5,7 @@ import 'package:taefood/screens/shop/main_shop.dart';
 import 'package:taefood/screens/user/main_user.dart';
 import 'package:taefood/screens/signIn.dart';
 import 'package:taefood/screens/signUp.dart';
+import 'package:taefood/screens/user/show_list_shop_all.dart';
 import 'package:taefood/utility/my_constant.dart';
 import 'package:taefood/utility/my_style.dart';
 import 'package:taefood/utility/normal_dialog.dart';
@@ -17,9 +18,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  Widget? currentWidget;
   @override
   void initState() {
     super.initState();
+    currentWidget = ShowListShopAll();
     checkPreferance();
   }
 
@@ -56,6 +59,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(),
       drawer: showDrawer(),
+      body: currentWidget,
     );
   }
 

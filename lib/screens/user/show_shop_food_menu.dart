@@ -1,11 +1,14 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:taefood/model/user_model.dart';
 import 'package:taefood/screens/user/about_shop.dart';
+import 'package:taefood/screens/user/show_menu_food.dart';
 import 'package:taefood/utility/my_style.dart';
 
 class ShowShopFoodMenu extends StatefulWidget {
   final UserModel? userModel;
-  ShowShopFoodMenu({Key? key, this.userModel}) : super(key: key);
+  const ShowShopFoodMenu({Key? key, this.userModel}) : super(key: key);
   @override
   _ShowShopFoodMenuState createState() => _ShowShopFoodMenuState();
 }
@@ -22,9 +25,9 @@ class _ShowShopFoodMenuState extends State<ShowShopFoodMenu> {
     listWidgets.add(AboutShop(
       userModel: userModel,
     ));
-    // listWidgets.add(ShowMenuFood(
-    //   userModel: userModel,
-    // ));
+    listWidgets.add(ShowMenuFood(
+      userModel: userModel,
+    ));
   }
 
   BottomNavigationBarItem aboutShopNav() {

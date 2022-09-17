@@ -9,6 +9,7 @@ import 'package:taefood/screens/home/home.dart';
 import 'app_localization.dart';
 
 main() {
+  // EP 78
   HttpOverrides.global = MyHttpOverride();
 
   WidgetsFlutterBinding.ensureInitialized();

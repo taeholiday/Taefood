@@ -4,9 +4,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taefood/model/cart_model.dart';
 import 'package:taefood/model/food_model.dart';
 import 'package:taefood/model/user_model.dart';
+import 'package:taefood/screens/home/home.dart';
+import 'package:taefood/screens/signIn.dart';
 import 'package:taefood/utility/my_api.dart';
 import 'package:taefood/utility/my_constant.dart';
 import 'package:taefood/utility/my_style.dart';
@@ -23,6 +26,7 @@ class ShowMenuFood extends StatefulWidget {
 
 class _ShowMenuFoodState extends State<ShowMenuFood> {
   UserModel? userModel;
+  String? idUser;
   String? idShop;
   List<FoodModel> foodModels = [];
   int amount = 1;
@@ -47,6 +51,8 @@ class _ShowMenuFoodState extends State<ShowMenuFood> {
   }
 
   Future<void> readFoodMenu() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    idUser = preferences.getString(MyConstant().keyId);
     idShop = userModel!.id;
     String url =
         '${MyConstant().domain}/TaeFood/getFoodWhereIdShop.php?isAdd=true&idShop=$idShop';
@@ -214,8 +220,17 @@ class _ShowMenuFoodState extends State<ShowMenuFood> {
                         Navigator.pop(context);
                         // print(
                         //     'Order ${foodModels[index].nameFood} Amount = $amount');
-
-                        addOrderToCart(index);
+                        if (idUser != null) {
+                          addOrderToCart(index);
+                        } else {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SignIn(),
+                            ),
+                            (route) => false,
+                          );
+                        }
                       },
                       child: Text(
                         'Order',

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
@@ -23,12 +24,23 @@ class _ShowStatusFoodOrderState extends State<ShowStatusFoodOrder> {
   List<List<String>> listSums = [];
   List<int> totalInts = [];
   List<int> statusInts = [];
+  Timer? timer;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
     findUser();
+    timer = Timer.periodic(const Duration(seconds: 10), (timer) {
+      findUser();
+    });
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -61,9 +73,9 @@ class _ShowStatusFoodOrderState extends State<ShowStatusFoodOrder> {
   Widget buildStepIndicator(int index) => Column(
         children: [
           StepsIndicator(
-            lineLength: 80,
+            lineLength: 70,
             selectedStep: index,
-            nbSteps: 4,
+            nbSteps: 5,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -72,6 +84,7 @@ class _ShowStatusFoodOrderState extends State<ShowStatusFoodOrder> {
               Text('Cooking'),
               Text('Delivery'),
               Text('Finish'),
+              Text('Cancel'),
             ],
           ),
         ],
@@ -214,6 +227,13 @@ class _ShowStatusFoodOrderState extends State<ShowStatusFoodOrder> {
   }
 
   Future<Null> readOrderFromIdUser() async {
+    orderModels.clear();
+    listMenuFoods.clear();
+    listPrices.clear();
+    listAmounts.clear();
+    listSums.clear();
+    totalInts.clear();
+    statusInts.clear();
     if (idUser != null) {
       String url =
           '${MyConstant().domain}/TaeFood/getOrderWhereIdUser.php?isAdd=true&idUser=$idUser';
@@ -235,14 +255,17 @@ class _ShowStatusFoodOrderState extends State<ShowStatusFoodOrder> {
             case 'UserOrder':
               status = 0;
               break;
-            case 'ShopCooking':
+            case 'Cooking':
               status = 1;
               break;
-            case 'RiderHandle':
+            case 'Rider':
               status = 2;
               break;
             case 'Finish':
               status = 3;
+              break;
+            case 'Cancel':
+              status = 4;
               break;
             default:
           }

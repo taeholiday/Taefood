@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taefood/model/user_model.dart';
 import 'package:taefood/screens/rider/main_rider.dart';
 import 'package:taefood/screens/shop/main_shop.dart';
+import 'package:taefood/screens/signUp.dart';
 import 'package:taefood/screens/user/main_user.dart';
 import 'package:taefood/utility/my_constant.dart';
 import 'package:taefood/utility/my_style.dart';
@@ -58,7 +59,9 @@ class _SignInState extends State<SignIn> {
                       userForm(),
                       MyStyle().mySizebox(),
                       passwordForm(),
-                      loginButton()
+                      MyStyle().mySizebox(),
+                      loginButton(),
+                      textButtonGenerator("register", registerService),
                     ],
                   ),
                 ),
@@ -70,9 +73,28 @@ class _SignInState extends State<SignIn> {
     );
   }
 
+  registerService() {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SignUp(),
+        ));
+  }
+
+  Widget textButtonGenerator(String buttonName, Function functionCallBack) {
+    return TextButton(
+        style: TextButton.styleFrom(
+          primary: Colors.blue,
+          onSurface: Colors.red,
+        ),
+        onPressed: () {
+          functionCallBack();
+        },
+        child: Text(buttonName));
+  }
+
   Widget loginButton() {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 16),
       width: MediaQuery.of(context).size.width * 0.7,
       child: ElevatedButton(
         style: MyStyle().myButtonStyle(),

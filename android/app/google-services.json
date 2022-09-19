@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "410288550491",
+    "project_id": "taefood-30182",
+    "storage_bucket": "taefood-30182.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:410288550491:android:c678bfe7658795e0bac57e",
+        "android_client_info": {
+          "package_name": "com.flutterthailand.taefood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "410288550491-k5b7rr4mj0lk15ba7a3jvp05qgb1g9ko.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC51Ute1KdklbdO289oBgYkJFDmrzlXd_E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "410288550491-k5b7rr4mj0lk15ba7a3jvp05qgb1g9ko.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

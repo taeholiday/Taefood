@@ -332,7 +332,7 @@ class _ShowCartState extends State<ShowCart> {
     await Dio().get(url).then((value) {
       if (value.toString() == 'true') {
         clearAllSQLite();
-        // notificationToShop(idShop);
+        normalDialog(context, 'ส่ง Order ไปที่ ร้านค้าแล้ว คะ');
       } else {
         normalDialog(context, 'ไม่สามารถ Order ได้ กรุณาลองใหม่');
       }
@@ -340,40 +340,8 @@ class _ShowCartState extends State<ShowCart> {
   }
 
   Future<Null> clearAllSQLite() async {
-    // Toast.show(
-    //   'Order เรียบร้อยแล้ว คะ',
-    //   context,
-    //   duration: Toast.LENGTH_LONG,
-    // );
     await SQLiteHelper().deleteAllData().then((value) {
       readSQLite();
     });
-  }
-
-  Future<Null> notificationToShop(String idShop) async {
-    String urlFindToken =
-        '${MyConstant().domain}/TaeFood/getUserWhereId.php?isAdd=true&id=$idShop';
-    await Dio().get(urlFindToken).then((value) {
-      var result = json.decode(value.data);
-      print('result ==> $result');
-      for (var json in result) {
-        UserModel model = UserModel.fromJson(json);
-        String tokenShop = model.token!;
-        print('tokenShop ==>> $tokenShop');
-
-        String title = 'มี Order จากลูกค้า';
-        String body = 'มีการสั่งอาหาร จากลูกค้า ครับ';
-        String urlSendToken =
-            '${MyConstant().domain}/TaeFood/apiNotification.php?isAdd=true&token=$tokenShop&title=$title&body=$body';
-
-        sendNotificationToShop(urlSendToken);
-      }
-    });
-  }
-
-  Future<Null> sendNotificationToShop(String urlSendToken) async {
-    await Dio().get(urlSendToken).then(
-          (value) => normalDialog(context, 'ส่ง Order ไปที่ ร้านค้าแล้ว คะ'),
-        );
   }
 }

@@ -5,18 +5,19 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taefood/model/order_model.dart';
+import 'package:taefood/screens/rider/order_detail_rider.dart';
 import 'package:taefood/utility/my_api.dart';
 import 'package:taefood/utility/my_constant.dart';
 import 'package:taefood/utility/my_style.dart';
 
-class OrderListShop extends StatefulWidget {
-  const OrderListShop({super.key});
+class OrderListShopRider extends StatefulWidget {
+  const OrderListShopRider({super.key});
 
   @override
-  State<OrderListShop> createState() => _OrderListShopState();
+  State<OrderListShopRider> createState() => _OrderListShopRiderState();
 }
 
-class _OrderListShopState extends State<OrderListShop> {
+class _OrderListShopRiderState extends State<OrderListShopRider> {
   String? idShop;
   List<OrderModel> orderModels = [];
   List<List<String>> listNameFoods = [];
@@ -48,12 +49,8 @@ class _OrderListShopState extends State<OrderListShop> {
     listAmounts.clear();
     listSums.clear();
     totals.clear();
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    idShop = preferences.getString(MyConstant().keyId);
-    print('idShop = $idShop');
 
-    String path =
-        '${MyConstant().domain}/TaeFood/getOrderWhereIdShop.php?isAdd=true&idShop=$idShop';
+    String path = '${MyConstant().domain}/TaeFood/getOrderAll.php?isAdd=true';
     await Dio().get(path).then((value) {
       // print('value ==>> $value');
       var result = json.decode(value.data);
@@ -92,7 +89,7 @@ class _OrderListShopState extends State<OrderListShop> {
           : ListView.builder(
               itemCount: orderModels.length,
               itemBuilder: (context, index) => orderModels[index].status! ==
-                      'UserOrder'
+                      'Cooking'
                   ? Card(
                       color: index % 2 == 0
                           ? Colors.lime.shade100
@@ -153,26 +150,8 @@ class _OrderListShopState extends State<OrderListShop> {
                               ],
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                ElevatedButton.icon(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.red,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      changeStatusOrderService(index, 'Cancel');
-                                    },
-                                    icon: Icon(
-                                      Icons.cancel,
-                                      color: Colors.white,
-                                    ),
-                                    label: Text(
-                                      'Cancel',
-                                      style: TextStyle(color: Colors.white),
-                                    )),
                                 ElevatedButton.icon(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.green,
@@ -181,15 +160,21 @@ class _OrderListShopState extends State<OrderListShop> {
                                       ),
                                     ),
                                     onPressed: () {
-                                      changeStatusOrderService(
-                                          index, 'Cooking');
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                OrderDetailRider(
+                                                    orderModel:
+                                                        orderModels[index]),
+                                          ));
                                     },
                                     icon: Icon(
-                                      Icons.restaurant,
+                                      Icons.two_wheeler,
                                       color: Colors.white,
                                     ),
                                     label: Text(
-                                      'Cooking',
+                                      'delivery',
                                       style: TextStyle(color: Colors.white),
                                     )),
                               ],

@@ -59,8 +59,7 @@ class _EditInfoShopState extends State<EditInfoShop> {
     String? idShop = preferences.getString('id');
     print('idShop ==>> $idShop');
 
-    String url =
-        '${MyConstant().domain}/TaeFood/getUserWhereId.php?isAdd=true&id=$idShop';
+    String url = '${MyConstant().domain}/TaeFood/.php?isAdd=true&id=$idShop';
 
     Response response = await Dio().get(url);
     print('response ==>> $response');

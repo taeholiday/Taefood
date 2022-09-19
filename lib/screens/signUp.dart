@@ -2,6 +2,8 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taefood/app_localization.dart';
 import 'package:taefood/utility/my_constant.dart';
 import 'package:taefood/utility/my_style.dart';
@@ -15,9 +17,71 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  String? chooseType, name, user, password;
+  String? chooseType, name, user, password, address, phone;
   bool statusRedEye = true;
   final formKey = GlobalKey<FormState>();
+  double? lat, lng;
+
+  @override
+  void initState() {
+    super.initState();
+    checkPermission();
+  }
+
+  Future<Null> checkPermission() async {
+    bool locationService;
+    LocationPermission locationPermission;
+
+    locationService = await Geolocator.isLocationServiceEnabled();
+    if (locationService) {
+      print('Service Location Open');
+
+      locationPermission = await Geolocator.checkPermission();
+      if (locationPermission == LocationPermission.denied) {
+        locationPermission = await Geolocator.requestPermission();
+        if (locationPermission == LocationPermission.deniedForever) {
+          alertLocationService(
+              context, 'ไม่อนุญาติแชร์ Location', 'โปรดแชร์ Location');
+        } else {
+          // Find LatLang
+          findLatLng();
+        }
+      } else {
+        if (locationPermission == LocationPermission.deniedForever) {
+          alertLocationService(
+              context, 'ไม่อนุญาติแชร์ Location', 'โปรดแชร์ Location');
+        } else {
+          // Find LatLng
+          findLatLng();
+        }
+      }
+    } else {
+      print('Service Location Close');
+      alertLocationService(context, 'Location Service ปิดอยู่ ?',
+          'กรุณาเปิด Location Service ด้วยคะ');
+    }
+  }
+
+  Future<Null> findLatLng() async {
+    print('findLatLan ==> Work');
+    Position? position = await findPostion();
+    setState(() {
+      lat = position!.latitude;
+      lng = position.longitude;
+      print('lat = $lat, lng = $lng');
+    });
+  }
+
+  Future<Position?> findPostion() async {
+    Position position;
+    try {
+      position = await Geolocator.getCurrentPosition();
+      return position;
+    } catch (e) {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,15 +106,51 @@ class _SignUpState extends State<SignUp> {
               MyStyle().mySizebox(),
               confirmPasswordForm(),
               MyStyle().mySizebox(),
+              phoneForm(),
+              MyStyle().mySizebox(),
+              addressForm(),
+              MyStyle().mySizebox(),
               MyStyle().showTitleH2('ชนิดของสมาชิก :'),
               MyStyle().mySizebox(),
               userRadio(),
               shopRadio(),
               riderRadio(),
+              lat == null ? MyStyle().showProgress() : showMap(),
               registerButton(),
             ],
           ),
         ));
+  }
+
+  Set<Marker> myMarker() {
+    return <Marker>[
+      Marker(
+        markerId: MarkerId('myShop'),
+        position: LatLng(lat!, lng!),
+        infoWindow: InfoWindow(
+          title: 'ร้านของคุณ',
+          snippet: 'ละติจูด = $lat, ลองติจูต = $lng',
+        ),
+      )
+    ].toSet();
+  }
+
+  Container showMap() {
+    LatLng latLng = LatLng(lat!, lng!);
+    CameraPosition cameraPosition = CameraPosition(
+      target: latLng,
+      zoom: 16.0,
+    );
+
+    return Container(
+      height: 300.0,
+      child: GoogleMap(
+        initialCameraPosition: cameraPosition,
+        mapType: MapType.normal,
+        onMapCreated: (controller) {},
+        markers: myMarker(),
+      ),
+    );
   }
 
   Widget registerButton() {
@@ -93,7 +193,7 @@ class _SignUpState extends State<SignUp> {
     print(
         'name = $name, user = $user, password = $password, chooseType = $chooseType');
     String url =
-        '${MyConstant().domain}/TaeFood/addUser.php?isAdd=true&Name=$name&User=$user&Password=$password&ChooseType=$chooseType';
+        '${MyConstant().domain}/TaeFood/addUser.php?isAdd=true&Name=$name&User=$user&Password=$password&ChooseType=$chooseType&Address=$address&Phone=$phone&Lat=$lat&Lng=$lng';
 
     try {
       Response response = await Dio().get(url);
@@ -239,6 +339,74 @@ class _SignUpState extends State<SignUp> {
                 ),
                 labelStyle: TextStyle(color: MyStyle().darkColor),
                 labelText: 'User :',
+                enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: MyStyle().darkColor)),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: MyStyle().primaryColor)),
+                errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: MyStyle().errorColor)),
+              ),
+            ),
+          ),
+        ],
+      );
+
+  Widget phoneForm() => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: TextFormField(
+              keyboardType: TextInputType.phone,
+              onChanged: (value) => phone = value.trim(),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please Fill Name in Blank';
+                } else {
+                  return null;
+                }
+              },
+              decoration: InputDecoration(
+                prefixIcon: Icon(
+                  Icons.phone,
+                  color: MyStyle().darkColor,
+                ),
+                labelStyle: TextStyle(color: MyStyle().darkColor),
+                labelText: 'เบอร์ติดต่อ :',
+                enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: MyStyle().darkColor)),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: MyStyle().primaryColor)),
+                errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: MyStyle().errorColor)),
+              ),
+            ),
+          ),
+        ],
+      );
+
+  Widget addressForm() => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: TextFormField(
+              maxLines: 3,
+              onChanged: (value) => address = value.trim(),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please Fill User in Blank';
+                } else {
+                  return null;
+                }
+              },
+              decoration: InputDecoration(
+                prefixIcon: Icon(
+                  Icons.home,
+                  color: MyStyle().darkColor,
+                ),
+                labelStyle: TextStyle(color: MyStyle().darkColor),
+                labelText: 'ที่อยู่ร้านค้า :',
                 enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: MyStyle().darkColor)),
                 focusedBorder: OutlineInputBorder(
